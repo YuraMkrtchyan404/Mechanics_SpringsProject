@@ -1,3 +1,4 @@
+
 import static java.lang.Math.*;
 
 public class Spring {
@@ -46,11 +47,13 @@ public class Spring {
         return coordinates;
     }
 
-    public static void main(String[] args) {
-        Spring spring = new Spring(20);
-        double[] coords = spring.move(10, 1, 4, 0);
-        for (double coord : coords) {
-            System.out.println(coord);
-        }
+    public Spring inSeries(Spring that) {
+        double equivalentK = 1 / (1 / this.k + 1 / that.k);
+        return new Spring(equivalentK);
+    }
+
+    public Spring inParallel(Spring that) {
+        double equivalentK = this.k + that.k;
+        return new Spring(equivalentK);
     }
 }

@@ -4,3 +4,5 @@ Made the plan when will do which tasks
 
 Did the first reading
 Completed the first task
+
+Completed the second task
