@@ -1,10 +1,16 @@
 import java.nio.charset.CoderResult;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.IllegalFormatCodePointException;
 import java.util.Objects;
 import java.util.Stack;
 
 public class SpringArray {
+
+    public static final double OPEN_BRACKET = -2;
+    public static final double CLOSE_BRACKET = -3;
+    public static final double OPEN_BRACE = 0;
+    public static final double CLOSE_BRACE = -1;
 
     /**
      * Prerequisite: springExpr is valid
@@ -18,7 +24,7 @@ public class SpringArray {
 
         replaceExpressionIntoStack_UnitStiffness(springExpr, main);
 
-        while (!(main.size() == 1)) {
+        while (main.size() != 1) {
             while (!main.isEmpty()) {
                 CombineSpringsAndChangeTheStack(stiffnessStorage, main, temp);
             }
@@ -64,7 +70,7 @@ public class SpringArray {
             while (main.peek() > 0) {
                 stiffnessStorage.add(main.pop());
             }
-            if (Objects.equals(main.peek(), temp.peek())) {
+            if (isInsideBracketsOrBraces(main, temp)) {
                 replaceSpringsWithEquivalent(stiffnessStorage, main, temp);
             }
             else {
@@ -72,6 +78,11 @@ public class SpringArray {
             }
             stiffnessStorage.clear();
         }
+    }
+
+    private static boolean isInsideBracketsOrBraces(Stack<Double> main, Stack<Double> temp) {
+        return (main.peek() == OPEN_BRACE && temp.peek() == CLOSE_BRACE) || (main.peek() == CLOSE_BRACE && temp.peek() == OPEN_BRACE)
+                || (main.peek() == OPEN_BRACKET && temp.peek() == CLOSE_BRACKET) || (main.peek() == CLOSE_BRACKET && temp.peek() == OPEN_BRACKET);
     }
 
     private static void putSpringsIntoTempWithNoChange(ArrayList<Double> stiffnessStorage, Stack<Double> temp) {
@@ -82,12 +93,12 @@ public class SpringArray {
 
     private static void replaceSpringsWithEquivalent(ArrayList<Double> stiffnessStorage, Stack<Double> main, Stack<Double> temp) {
         double tempStiffness = stiffnessStorage.get(0);
-        if (main.peek() == 0) {
+        if (main.peek() == OPEN_BRACE || main.peek() == CLOSE_BRACE) {
             for (int i = 1; i < stiffnessStorage.size(); i++) {
                 tempStiffness = 1 / ((1 / tempStiffness) + (1 / stiffnessStorage.get(i)));
             }
         }
-        else if (main.peek() == -1) {
+        else if (main.peek() == OPEN_BRACKET || main.peek() == CLOSE_BRACKET) {
             for (int i = 1; i < stiffnessStorage.size(); i++) {
                 tempStiffness += stiffnessStorage.get(i);
             }
@@ -103,10 +114,14 @@ public class SpringArray {
             if (isEmptyBracketsOrBraces(springExpr, i)) {
                 main.push(1.0);
                 i--;
-            } else if (springExpr.charAt(i) == '[' || springExpr.charAt(i) == ']') {
-                main.push(-1.0);
-            } else if (springExpr.charAt(i) == '{' || springExpr.charAt(i) == '}') {
-                main.push(0.0);
+            } else if (springExpr.charAt(i) == '[') {
+                main.push(OPEN_BRACKET);
+            } else if (springExpr.charAt(i) == ']'){
+                main.push(CLOSE_BRACKET);
+            } else if (springExpr.charAt(i) == '{') {
+                main.push(OPEN_BRACE);
+            } else if (springExpr.charAt(i) == '}') {
+                main.push(CLOSE_BRACE);
             }
         }
     }
@@ -126,10 +141,14 @@ public class SpringArray {
                 main.push(springs[springIndex].getStiffness());
                 springIndex--;
                 i--;
-            } else if (springExpr.charAt(i) == '[' || springExpr.charAt(i) == ']') {
-                main.push(-1.0);
-            } else if (springExpr.charAt(i) == '{' || springExpr.charAt(i) == '}') {
-                main.push(0.0);
+            } else if (springExpr.charAt(i) == '[') {
+                main.push(OPEN_BRACKET);
+            } else if (springExpr.charAt(i) == ']'){
+                main.push(CLOSE_BRACKET);
+            } else if (springExpr.charAt(i) == '{') {
+                main.push(OPEN_BRACE);
+            } else if (springExpr.charAt(i) == '}') {
+                main.push(CLOSE_BRACE);
             }
         }
     }
@@ -137,7 +156,7 @@ public class SpringArray {
     public static void main(String[] args) {
         String str1 = "[]"; // 1
         String str2 = "{[][][]}"; // 1/3
-        String str3 = "[{{}{}{}}[[][][]]]"; // 10/3
+        String str3 = "{[{[][]}][]{{[][]}[[][]]}{{}{}{}}}"; // 10/3
         String str4 = "[[]{{[][][]}[{}{}{}]}]"; // 13/10
 
         System.out.println(equivalentSpring(str1, new Spring[]{new Spring(5)}).getStiffness());
