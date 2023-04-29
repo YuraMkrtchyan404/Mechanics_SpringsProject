@@ -26,17 +26,8 @@ public class FT {
     public double[] getAmplitudes() {
         double[] amplitudes = new double[x.length];
         for (int k = 0; k < x.length; k++) {
-            amplitudes[k] = Math.sqrt(yReal[k] * yReal[k] + yImag[k] * yImag[k]) / x.length;
+            amplitudes[k] = Math.sqrt(yReal[k] * yReal[k] + yImag[k] * yImag[k]);
         }
         return amplitudes;
-    }
-
-    public double[] getFrequencies(double dt) {
-        double[] frequencies = new double[x.length];
-        double df = 1 / (dt * x.length);
-        for (int k = 0; k < x.length; k++) {
-            frequencies[k] = k * df;
-        }
-        return frequencies;
     }
 }
