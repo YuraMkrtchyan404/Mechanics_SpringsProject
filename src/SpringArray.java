@@ -1,9 +1,6 @@
 import java.nio.charset.CoderResult;
 import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
-import java.util.Objects;
-import java.util.Stack;
+import java.util.*;
 
 public class SpringArray {
 
@@ -43,7 +40,7 @@ public class SpringArray {
      * @param springs
      * @return
      */
-    static Spring equivalentSpring(String springExpr, Spring[] springs){
+    public static Spring equivalentSpring(String springExpr, Spring[] springs){
         ArrayList<Double> stiffnessStorage = new ArrayList<>();
         Stack<Double> main = new Stack<>();
         Stack<Double> temp = new Stack<>();
@@ -151,18 +148,6 @@ public class SpringArray {
                 main.push(CLOSE_BRACE);
             }
         }
-    }
-
-    public static void main(String[] args) {
-        String str1 = "[]"; // 1
-        String str2 = "{[][][]}"; // 1/3
-        String str3 = "{[{[][]}][]{{[][]}[[][]]}{{}{}{}}}"; // 10/3
-        String str4 = "[[]{{[][][]}[{}{}{}]}]"; // 13/10
-
-        System.out.println(equivalentSpring(str1, new Spring[]{new Spring(5)}).getStiffness());
-        System.out.println(equivalentSpring(str2, new Spring[]{new Spring(2), new Spring(4), new Spring(6)}).getStiffness());
-        System.out.println(equivalentSpring(str3).getStiffness());
-        System.out.println(equivalentSpring(str4).getStiffness());
     }
 }
 
